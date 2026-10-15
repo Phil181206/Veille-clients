@@ -25,3 +25,8 @@ jobs:
       - name: Lancer la veille
         run: |
           python veille.py
+      - name: Publier le rapport
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapport-veille
+          path: rapport.txt
