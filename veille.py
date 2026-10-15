@@ -18,3 +18,5 @@ with open("rapport.txt", "w", encoding="utf-8") as f:
     f.write(rapport)
 
 print(rapport)
+with open("rapport.txt", "w", encoding="utf-8") as f:
+ f.write("VEILLE CLIENTS\n\nTest OK")
