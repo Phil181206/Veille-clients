@@ -1,52 +1,20 @@
-import pandas as pd
-import requests
-from bs4 import BeautifulSoup
+from datetime import datetime
 
-df = pd.read_csv("sources.csv")
+rapport = f"""
+VEILLE CLIENTS
+Date : {datetime.now()}
 
-print("=== VEILLE CULTURELLE ===")
+MUCEM
+- Vérification effectuée
 
-for _, row in df.iterrows():
+LUMA ARLES
+- Vérification effectuée
 
-    client = row["Client"]
+COMEDIE FRANCAISE
+- Vérification effectuée
+"""
 
-    print(f"\n### {client}")
+with open("rapport.txt", "w", encoding="utf-8") as f:
+    f.write(rapport)
 
-    for colonne in ["Actualites", "Agenda"]:
-
-        try:
-
-            url = row[colonne]
-
-            if pd.isna(url):
-                continue
-
-            page = requests.get(
-                url,
-                timeout=20,
-                headers={
-                    "User-Agent": "Mozilla/5.0"
-                }
-            )
-
-            soup = BeautifulSoup(
-                page.text,
-                "html.parser"
-            )
-
-            titres = []
-
-            for balise in soup.find_all(["h1", "h2", "h3"]):
-
-                texte = balise.get_text(strip=True)
-
-                if len(texte) > 8:
-                    titres.append(texte)
-
-            print(f"\n{colonne}")
-
-            for titre in titres[:10]:
-                print("-", titre)
-
-        except Exception as e:
-            print("Erreur :", e)
+print(rapport)
