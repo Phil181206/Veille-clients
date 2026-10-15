@@ -30,4 +30,3 @@ jobs:
         with:
           name: rapport-veille
           path: rapport.txt
-- name: Publier le rapport
