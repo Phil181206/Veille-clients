@@ -5,7 +5,7 @@ from datetime import datetime
 
 rapport = []
 
-df = pd.read_csv("source.csv")
+df = pd.read_csv("sources.csv")
 
 rapport.append("VEILLE CULTURELLE")
 rapport.append(f"Date : {datetime.now()}")
