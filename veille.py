@@ -12,7 +12,7 @@ for _, row in df.iterrows():
 
     print(f"\n### {client}")
 
-    for colonne in ["Actualites", "Agenda"\]:
+    for colonne in ["Actualites", "Agenda"]:
 
         try:
 
@@ -24,7 +24,9 @@ for _, row in df.iterrows():
             page = requests.get(
                 url,
                 timeout=20,
-                headers={"User-Agent": "Mozilla/5.0"}
+                headers={
+                    "User-Agent": "Mozilla/5.0"
+                }
             )
 
             soup = BeautifulSoup(
@@ -41,9 +43,9 @@ for _, row in df.iterrows():
                 if len(texte) > 8:
                     titres.append(texte)
 
-            print(f"\n{colonne} :")
+            print(f"\n{colonne}")
 
-            for titre in titres[:10\]:
+            for titre in titres[:10]:
                 print("-", titre)
 
         except Exception as e:
