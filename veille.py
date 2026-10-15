@@ -1,0 +1,1 @@
+print("Veille culturelle opérationnelle")
