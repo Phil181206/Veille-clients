@@ -1,10 +1,8 @@
 import pandas as pd
 
-print("=== VEILLE CULTURELLE ===")
+df = pd.read_csv("source.csv")
 
-try:
-    df = pd.read_csv("sources.csv")
-    print(df.head())
+print("=== CLIENTS SURVEILLÉS ===")
 
-except Exception as e:
-    print("Erreur :", e)
+for _, row in df.iterrows():
+    print(row["Client"])
