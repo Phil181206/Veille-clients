@@ -1,22 +1,42 @@
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
+import os
 
-rapport = []
+SOURCE_FILE = "sources.csv"
+HISTORIQUE_FILE = "historique.csv"
 
-df = pd.read_csv("sources.csv")
+# =========================
+# Lecture des sources
+# =========================
 
-rapport.append("VEILLE CULTURELLE")
-rapport.append(f"Date : {datetime.now()}")
-rapport.append("")
+df = pd.read_csv(SOURCE_FILE)
+
+nouveaux = []
+actuels = []
+
+print("\n===== NOUVEAUTES DETECTEES =====\n")
+
+# =========================
+# Historique précédent
+# =========================
+
+if os.path.exists(HISTORIQUE_FILE):
+    historique = pd.read_csv(HISTORIQUE_FILE)
+else:
+    historique = pd.DataFrame(
+        columns=["Client", "Titre"]
+    )
+
+# =========================
+# Parcours des sites
+# =========================
 
 for _, row in df.iterrows():
 
     client = row["Client"]
 
-    rapport.append("=" * 50)
-    rapport.append(client)
+    print(f"\n{client}")
 
     for colonne in ["Actualites", "Agenda"]:
 
@@ -53,28 +73,68 @@ for _, row in df.iterrows():
                 if len(texte) > 10:
                     titres.append(texte)
 
-            rapport.append("")
-            rapport.append(f"{colonne} :")
+            # On garde les 10 premiers
+            titres = titres[:10]
 
-            for titre in titres[:10]:
-                rapport.append(f"- {titre}")
+            for titre in titres:
+
+                actuels.append(
+                    [client, titre]
+                )
+
+                deja_vu = (
+                    (
+                        historique["Client"]
+                        == client
+                    )
+                    &
+                    (
+                        historique["Titre"]
+                        == titre
+                    )
+                ).any()
+
+                if not deja_vu:
+
+                    nouveaux.append(
+                        [client, titre]
+                    )
+
+                    print(
+                        f"✅ NOUVEAU : {titre}"
+                    )
 
         except Exception as e:
 
-            rapport.append(
-                f"Erreur {colonne} : {e}"
+            print(
+                f"Erreur {client} : {e}"
             )
 
-    rapport.append("")
+# =========================
+# Sauvegarde historique
+# =========================
 
-texte_final = "\n".join(rapport)
+pd.DataFrame(
+    actuels,
+    columns=["Client", "Titre"]
+).to_csv(
+    HISTORIQUE_FILE,
+    index=False
+)
 
-with open(
-    "rapport.txt",
-    "w",
-    encoding="utf-8"
-) as f:
+# =========================
+# Rapport
+# =========================
 
-    f.write(texte_final)
+rapport = []
 
-print(texte_final)
+rapport.append(
+    "VEILLE HEBDOMADAIRE"
+)
+
+rapport.append("")
+
+for client, titre in nouveaux:
+
+    rapport.append(
+        f"{client
